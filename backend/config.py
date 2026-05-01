@@ -19,3 +19,4 @@ class Config:
     SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
     SMTP_FROM_EMAIL = os.environ.get("SMTP_FROM_EMAIL", SMTP_USERNAME)
     SMTP_USE_TLS = os.environ.get("SMTP_USE_TLS", "true").lower() == "true"
+    BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:5000")
