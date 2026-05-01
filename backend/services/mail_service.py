@@ -31,13 +31,14 @@ def send_welcome_email(user) -> bool:
     message.set_content(text_content)
 
     # HTML version
+    dashboard_url = f"{Config.BASE_URL}/login"
     html_content = f"""
     <!DOCTYPE html>
     <html>
     <head>
         <style>
             .email-card {{
-                font-family: 'Inter', sans-serif;
+                font-family: 'Inter', -apple-system, sans-serif;
                 max-width: 600px;
                 margin: 20px auto;
                 background: #0b1120;
@@ -74,16 +75,16 @@ def send_welcome_email(user) -> bool:
             }}
         </style>
     </head>
-    <body style="background-color: #020617; padding: 20px;">
+    <body style="background-color: #020617; padding: 20px; margin: 0;">
         <div class="email-card">
             <div class="header">
                 <h1 style="margin: 0; font-size: 28px; color: white;">SkillRank</h1>
             </div>
             <div class="body">
-                <h2 style="color: #6366f1;">Welcome, {user.get('name', 'User')}!</h2>
+                <h2 style="color: #6366f1; margin-top: 0;">Welcome, {user.get('name', 'User')}!</h2>
                 <p style="color: #f1f5f9;">Your account has been successfully created. We're excited to have you on board!</p>
                 <p style="color: #f1f5f9;">You can now log in to your dashboard to manage your skills and profile.</p>
-                <a href="http://127.0.0.1:5000/login" class="btn">Go to Dashboard</a>
+                <a href="{dashboard_url}" class="btn">Go to Dashboard</a>
             </div>
             <div class="footer">
                 &copy; 2026 SkillRank Team. All rights reserved.
@@ -94,11 +95,25 @@ def send_welcome_email(user) -> bool:
     """
     message.add_alternative(html_content, subtype="html")
 
-    print(f"DEBUG: Attempting to send welcome email to {user['email']}...")
-    with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT, timeout=15) as smtp:
-        if Config.SMTP_USE_TLS:
-            smtp.starttls()
-        smtp.login(Config.SMTP_USERNAME, Config.SMTP_PASSWORD)
-        smtp.send_message(message)
+    print(f"DEBUG: Attempting SMTP send to {user['email']} via {Config.SMTP_HOST}:{Config.SMTP_PORT}...")
+    try:
+        # Use SMTP_SSL for port 465, otherwise use SMTP + starttls
+        if Config.SMTP_PORT == 465:
+            smtp_server = smtplib.SMTP_SSL(Config.SMTP_HOST, Config.SMTP_PORT, timeout=15)
+        else:
+            smtp_server = smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT, timeout=15)
 
-    return True
+        with smtp_server as smtp:
+            smtp.set_debuglevel(1)  # Enable debug output to see SMTP conversation
+            if Config.SMTP_PORT != 465 and Config.SMTP_USE_TLS:
+                smtp.starttls()
+            
+            smtp.login(Config.SMTP_USERNAME, Config.SMTP_PASSWORD)
+            smtp.send_message(message)
+            print(f"DEBUG: Email successfully sent to {user['email']}")
+            return True
+    except Exception as e:
+        print(f"ERROR: SMTP failed for {user['email']}: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise e
