@@ -251,10 +251,52 @@
       color: var(--muted); font-size: 15px;
     }
 
+    /* ── Mobile Header ── */
+    .mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(7,15,31,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .mobile-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .mobile-brand .brand-mark {
+      width: 32px; height: 32px; font-size: 12px;
+      box-shadow: none;
+    }
+    .mobile-brand h2 { font-size: 14px; font-weight: 800; }
+    
+    .mobile-actions {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .mobile-action-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .mobile-action-link.logout {
+      color: #f87171;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .layout { grid-template-columns: 1fr; }
       .sidebar { display: none; }
+      .mobile-header { display: flex; }
       .stats   { grid-template-columns: 1fr 1fr; }
       .main    { padding: 20px; }
 
@@ -479,6 +521,18 @@
         <a href="/logout" class="logout-btn">Sign Out</a>
       </div>
     </aside>
+    
+    <!-- ── Mobile Header ── -->
+    <header class="mobile-header">
+      <a href="/admin" class="mobile-brand">
+        <div class="brand-mark">SR</div>
+        <h2>SkillRank</h2>
+      </a>
+      <div class="mobile-actions">
+        <a href="/profile" class="mobile-action-link">Profile</a>
+        <a href="/logout" class="mobile-action-link logout">Sign Out</a>
+      </div>
+    </header>
 
     <!-- ── Main ── -->
     <main class="main">
