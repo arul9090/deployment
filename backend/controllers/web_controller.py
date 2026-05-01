@@ -1,8 +1,29 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from models import user_model
+from services.mail_service import send_welcome_email, smtp_is_configured
 from services.auth_service import admin_required, login_required
 
 web_bp = Blueprint("web", __name__)
+
+
+@web_bp.get("/admin/test-smtp")
+@admin_required
+def test_smtp():
+    user = user_model.find_by_id(session["user_id"])
+    if not user:
+        return "User not found", 404
+        
+    if not smtp_is_configured():
+        flash("SMTP is not configured in environment variables.", "danger")
+        return redirect(url_for("web.admin_dashboard"))
+        
+    try:
+        send_welcome_email(user)
+        flash(f"Test email sent successfully to {user['email']}!", "success")
+    except Exception as e:
+        flash(f"SMTP Test Failed: {str(e)}", "danger")
+        
+    return redirect(url_for("web.admin_dashboard"))
 
 
 @web_bp.get("/")

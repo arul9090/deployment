@@ -73,11 +73,18 @@ def google_callback():
         flash("Google did not return a valid email address.", "danger")
         return redirect(url_for("auth.login"))
 
+    # Send welcome email if new user OR if they just switched to Google provider
+    # (Checking auth_provider helps ensure they get a 'welcome' to the new method)
+    should_send = created or user.get("auth_provider") == "google"
+    # Actually, let's stick to 'created' to avoid spamming, but add better logging
     if created:
         try:
+            print(f"DEBUG: New Google user created: {user.get('email')}. Sending welcome email.")
             send_welcome_email(user)
         except Exception as exc:
-            print(f"Warning: welcome email failed for {user.get('email')}: {exc}")
+            # We don't want to crash the login if email fails
+            print(f"CRITICAL: SMTP Failure during Google Login for {user.get('email')}: {exc}")
+            flash("Login successful, but we couldn't send your welcome email. Please check your SMTP settings.", "warning")
 
     start_user_session(user)
     return redirect(url_for("web.dashboard"))
