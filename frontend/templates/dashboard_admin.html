@@ -251,47 +251,6 @@
       color: var(--muted); font-size: 15px;
     }
 
-    /* ── Mobile Header ── */
-    .mobile-header {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      background: rgba(7,15,31,0.95);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(20px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .mobile-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .mobile-brand .brand-mark {
-      width: 32px; height: 32px; font-size: 12px;
-      box-shadow: none;
-    }
-    .mobile-brand h2 { font-size: 14px; font-weight: 800; }
-    
-    .mobile-actions {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-    .mobile-action-link {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      text-decoration: none;
-    }
-    .mobile-action-link.logout {
-      color: #f87171;
-    }
-
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .layout { grid-template-columns: 1fr; }
@@ -550,6 +509,11 @@
         <div>
           <h1>User Directory</h1>
           <p>Manage all registered accounts on the platform.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <a href="/admin/test-smtp" class="btn-page" style="text-decoration: none; display: flex; align-items: center; gap: 8px; border-color: var(--accent); color: var(--accent); background: rgba(245, 158, 11, 0.05);">
+            <span style="font-size: 16px;">📧</span> Test SMTP
+          </a>
         </div>
       </div>
 
